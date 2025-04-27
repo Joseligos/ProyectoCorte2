@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { devolverLibroAlCatalogo, rehacerDevolucion } from './store/slices/bibliotecaSlice';
+import { rehacerDevolucion, devolverLibroAlCatalogo } from './store/slices/bibliotecaSlice';
 
 const Devoluciones = () => {
     const dispatch = useDispatch();
@@ -10,7 +10,6 @@ const Devoluciones = () => {
     };
 
     const handleDevolverAlCatalogo = (libro) => {
-        console.log("Devolviendo al catálogo el libro:", libro);
         dispatch(devolverLibroAlCatalogo({ libroId: libro.id, titulo: libro.titulo }));
     };
 
@@ -27,6 +26,7 @@ const Devoluciones = () => {
                         >
                             Rehacer Devolución
                         </button>
+
                         <button
                             style={{ marginLeft: '10px' }}
                             onClick={() => handleDevolverAlCatalogo(libro)}

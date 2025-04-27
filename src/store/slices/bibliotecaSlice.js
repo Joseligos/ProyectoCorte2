@@ -35,33 +35,34 @@ const bibliotecaSlice = createSlice({
       }
     },
     prestarLibro: (state, action) => {
-        const { libroId, usuario } = action.payload;
-        const libro = state.catalog.nodes[libroId];
-        if (!libro) return;
-      
-        if (state.librosPrestados[libroId]) {
-          if (!state.esperaQueue[libroId]) {
-            state.esperaQueue[libroId] = [];
-          }
-          state.esperaQueue[libroId].push(usuario);
-          alert(`${usuario} se ha añadido a la cola para el libro "${libro.titulo}"`);
-          return;
+      const { libroId, usuario } = action.payload;
+      const libro = state.catalog.nodes[libroId];
+      if (!libro) return;
+    
+      if (state.librosPrestados[libroId]) {
+        if (!state.esperaQueue[libroId]) {
+          state.esperaQueue[libroId] = [];
         }
-      
-        state.librosPrestados[libroId] = { titulo: libro.titulo, usuario };
-      
-        if (libro.prev !== null) {
-          state.catalog.nodes[libro.prev].next = libro.next;
-        } else {
-          state.catalog.head = libro.next;
-        }
-      
-        if (libro.next !== null) {
-          state.catalog.nodes[libro.next].prev = libro.prev;
-        } else {
-          state.catalog.tail = libro.prev;
-        }
-      
+        state.esperaQueue[libroId].push(usuario);
+        alert(`${usuario} se ha añadido a la cola para el libro "${libro.titulo}"`);
+        return;
+      }
+    
+      state.librosPrestados[libroId] = { titulo: libro.titulo, usuario };
+    
+      if (libro.prev !== null) {
+        state.catalog.nodes[libro.prev].next = libro.next;
+      } else {
+        state.catalog.head = libro.next;
+      }
+    
+      if (libro.next !== null) {
+        state.catalog.nodes[libro.next].prev = libro.prev;
+      } else {
+        state.catalog.tail = libro.prev;
+      }
+    
+      delete state.catalog.nodes[libroId];
     },
     devolverLibro: (state, action) => {
         const { libroId, titulo } = action.payload;
