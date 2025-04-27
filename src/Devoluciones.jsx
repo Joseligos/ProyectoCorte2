@@ -4,6 +4,8 @@ import { rehacerDevolucion, devolverLibroAlCatalogo } from './store/slices/bibli
 const Devoluciones = () => {
     const dispatch = useDispatch();
     const devolucionStack = useSelector((state) => state.biblioteca.devolucionStack);
+    const librosPrestados = useSelector((state) => state.biblioteca.librosPrestados);
+    const esperaQueue = useSelector((state) => state.biblioteca.esperaQueue);
 
     const handleRehacerDevolucion = () => {
         dispatch(rehacerDevolucion());
@@ -11,6 +13,13 @@ const Devoluciones = () => {
 
     const handleDevolverAlCatalogo = (libro) => {
         dispatch(devolverLibroAlCatalogo({ libroId: libro.id, titulo: libro.titulo }));
+    };
+
+    const puedeDevolverAlCatalogo = (libroId) => {
+        const estaPrestado = librosPrestados[libroId];
+        const tieneCola = esperaQueue[libroId] && esperaQueue[libroId].length > 0;
+
+        return !estaPrestado && !tieneCola;
     };
 
     return (
@@ -30,6 +39,7 @@ const Devoluciones = () => {
                         <button
                             style={{ marginLeft: '10px' }}
                             onClick={() => handleDevolverAlCatalogo(libro)}
+                            disabled={!puedeDevolverAlCatalogo(libro.id)}
                         >
                             Devolver al Catálogo
                         </button>
