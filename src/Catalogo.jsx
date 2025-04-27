@@ -28,7 +28,7 @@ const Catalogo = () => {
           console.error(`Libro con id ${currentId} no encontrado`);
           break;
         }
-  
+
         libros.push(
           <li key={currentLibro.id}>
             {currentLibro.titulo}

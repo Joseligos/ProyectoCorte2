@@ -85,6 +85,33 @@ const bibliotecaSlice = createSlice({
             delete state.esperaQueue[libroId];
           }
         }
+    },
+    devolverLibroAlCatalogo: (state, action) => {
+      const { libroId } = action.payload;
+
+      const libro = state.devolucionStack.find((libro) => libro.id === libroId);
+
+      if (libro) {
+        const nuevoLibro = {
+          id: libro.id,
+          titulo: libro.titulo,
+          prev: state.catalog.tail,
+          next: null,
+        };
+        if (state.catalog.tail) {
+          const tailLibro = state.catalog.nodes[state.catalog.tail];
+          tailLibro.next = libro.id;
+        }
+        if (!state.catalog.head) {
+          state.catalog.head = libro.id;
+        }
+
+        state.catalog.tail = libro.id;
+
+        state.catalog.nodes[libro.id] = nuevoLibro;
+
+        state.devolucionStack = state.devolucionStack.filter((item) => item.id !== libroId);
+      }
     },   
     rehacerDevolucion: (state) => {
       if (state.devolucionStack.length > 0) {
@@ -113,6 +140,7 @@ export const {
   devolverLibro,
   rehacerDevolucion,
   agregarACola,
+  devolverLibroAlCatalogo
 } = bibliotecaSlice.actions;
 
 export default bibliotecaSlice.reducer;
